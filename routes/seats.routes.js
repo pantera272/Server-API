@@ -20,8 +20,15 @@ router.route('/seats').post((req, res) => {
     client : client,
     email : email 
   };
-  seats.push(newData);
-  res.json({message : 'Ok'});
+
+  const isReserved = seats.some(reserved => (reserved.day == day && reserved.seat == seat));
+  
+  if (isReserved){
+    return res.status(404).json({ message: "The slot is already taken..." });
+  } else {
+    seats.push(newData);
+    res.json({message : 'Ok'});
+  }  
 });
 
 router.route('/seats/:id').put((req, res) => {
