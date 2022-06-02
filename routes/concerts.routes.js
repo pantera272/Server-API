@@ -1,45 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
-const { concerts}= require('../db');
+const ConcertController = require('../controllers/concerts.controllers');
 
-router.route('/concerts').get((req, res) => {
-  res.json(concerts);
-});
+router.get('/concerts', ConcertController.getAll);
+router.get('/concerts/:id', ConcertController.getById);
 
-router.route('/concerts/:id').get((req, res) => {
-  res.json(concerts.filter((item) => item.id == req.params.id));
-});
+router.post('/concerts', ConcertController.addData);
 
-router.route('/concerts').post((req, res) => {
-  const { performer, genre, price, day, image } = req.body;
-  const newData = {
-    id: uuidv4(), 
-    performer : performer, 
-    genre : genre, 
-    price : price,
-    day : day,
-    image : image
-  };
-  concerts.push(newData);
-  res.json({message : 'Ok'});
-});
+router.put('/concerts/:id', ConcertController.updateData);
 
-router.route('/concerts/:id').put((req, res) => {
-  const { performer, genre, price, day, image } = req.body;
-  const index = concerts.findIndex(obj => obj.id == req.params.id);
-  concerts[index].performer = performer;
-  concerts[index].genre = genre;
-  concerts[index].price = price;
-  concerts[index].day = day;
-  concerts[index].image = image;
-  res.json({message : 'OK'});
-});
-
-router.route('/concerts/:id').delete((req,res) =>{
-  const index = concerts.findIndex(obj => obj.id == req.params.id);
-  concerts.splice(index, 1);
-  res.json({message : 'OK'});
-});
+router.delete('/concerts/:id', ConcertController.deleteData);
 
 module.exports = router;
